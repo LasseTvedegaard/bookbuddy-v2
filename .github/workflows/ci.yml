@@ -1,0 +1,54 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [dev, stage, main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: bookbuddydb
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: secret
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout kode
+        uses: actions/checkout@v4
+
+      - name: Sæt op .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Byg backend
+        run: |
+          cd backend/BookBuddy.Api
+          dotnet build
+
+      - name: Kør tests
+        run: |
+          cd backend/BookBuddy.Tests
+          dotnet test
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Byg frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build

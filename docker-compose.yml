@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./backend/BookBuddy.Api
+      dockerfile: Dockerfile.dev  # 👈 Brug denne til hot reload
+    ports:
+      - "8888:80"
+    volumes:
+      - ./backend/BookBuddy.Api:/app  # 👈 Map kildekoden ind
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=bookbuddydb;Username=postgres;Password=secret
+
+  db:
+    image: postgres:16
+    container_name: bookbuddy-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: bookbuddydb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app           # Sync kode fra host -> container
+      - /app/node_modules         # Beskyt node_modules i containeren
+    stdin_open: true
+    tty: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+
+volumes:
+  pgdata:

@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "yRXb67vqoZgUt2uhX2NBpDCl7BUe45KwRXQ6cB4G9x8=",
+  "Source": "BookBuddy.Api",
+  "BasePath": "_content/BookBuddy.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

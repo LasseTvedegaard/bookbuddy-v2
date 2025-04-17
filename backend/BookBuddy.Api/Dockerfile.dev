@@ -1,0 +1,10 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0
+
+WORKDIR /app
+
+COPY . ./
+
+# Installer dotnet-watch tool (burde allerede være i SDK)
+EXPOSE 80
+
+CMD ["dotnet", "watch", "run", "--urls=http://0.0.0.0:80"]
