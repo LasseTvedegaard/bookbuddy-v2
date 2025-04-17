@@ -52,3 +52,19 @@ jobs:
           cd frontend
           npm install
           npm run build
+
+      - name: Log ind på Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Byg og push backend image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/bookbuddy-backend:dev ./backend/BookBuddy.Api
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/bookbuddy-backend:dev
+
+      - name: Byg og push frontend image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/bookbuddy-frontend:dev ./frontend
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/bookbuddy-frontend:dev
