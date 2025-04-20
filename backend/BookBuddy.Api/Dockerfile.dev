@@ -5,6 +5,6 @@ WORKDIR /app
 COPY . ./
 
 # Installer dotnet-watch tool (burde allerede være i SDK)
-EXPOSE 8081  # Sørg for at bruge den rigtige port (8081 i stedet for 80)
+EXPOSE 8081
 
 CMD ["dotnet", "watch", "run", "--urls=http://0.0.0.0:8081"]
