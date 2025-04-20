@@ -6,7 +6,7 @@ services:
       context: ./backend/BookBuddy.Api
       dockerfile: Dockerfile.dev  # Brug Dockerfile.dev til udvikling
     ports:
-      - "8081:80"  # Backend port mapping - matche porten med Dockerfile.dev
+      - "8088:80"  # Backend port mapping - matche porten med Dockerfile.dev
     volumes:
       - ./backend/BookBuddy.Api:/app
     depends_on:
