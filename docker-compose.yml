@@ -4,11 +4,11 @@ services:
   backend:
     build:
       context: ./backend/BookBuddy.Api
-      dockerfile: Dockerfile.dev  
+      dockerfile: Dockerfile.dev  # Brug Dockerfile.dev til udvikling
     ports:
-      - "8888:80"
+      - "8081:80"  # Backend port mapping - matche porten med Dockerfile.dev
     volumes:
-      - ./backend/BookBuddy.Api:/app  
+      - ./backend/BookBuddy.Api:/app
     depends_on:
       - db
     environment:
@@ -19,7 +19,7 @@ services:
     image: postgres:16
     container_name: bookbuddy-db
     ports:
-      - "5432:5432"
+      - "5432:5432"  # PostgreSQL port
     environment:
       POSTGRES_DB: bookbuddydb
       POSTGRES_USER: postgres
@@ -31,7 +31,7 @@ services:
     build:
       context: ./frontend
     ports:
-      - "3000:3000"
+      - "3000:3000"  # Frontend port mapping
     volumes:
       - ./frontend:/app
       - /app/node_modules
