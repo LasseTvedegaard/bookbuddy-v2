@@ -1,0 +1,59 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./backend/BookBuddy.Api
+    ports:
+      - "8081:80"  # Stage-backend på port 8081
+    volumes:
+      - ./backend/BookBuddy.Api:/app
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Stage
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=bookbuddy_stage_db;Username=postgres;Password=secret
+
+  db:
+    image: postgres:16
+    container_name: bookbuddy-stage-db
+    ports:
+      - "5433:5432"  # Stage-database på port 5433
+    environment:
+      POSTGRES_DB: bookbuddy_stage_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3001:3000"  # Stage-frontend på port 3001
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+
+  mobile:
+    build:
+      context: ./mobile
+    ports:
+      - "19000:19000"     # Metro bundler (default port)
+      - "19001:19001"     # Metro websocket
+      - "19002:19002"     # Expo dev tools (browser)
+    volumes:
+      - ./mobile:/app
+    command: npx expo start --tunnel
+    stdin_open: true
+    tty: true
+    environment:
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+
+volumes:
+  pgdata:
