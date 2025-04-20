@@ -12,13 +12,13 @@ services:
       - db
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=bookbuddy_prod_db;Username=postgres;Password=secret
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5434;Database=bookbuddy_prod_db;Username=postgres;Password=secret
 
   db:
     image: postgres:16
     container_name: bookbuddy-prod-db
     ports:
-      - "5432:5432"  # Prod-database på port 5432
+      - "5434:5432"  # Skiftet til port 5434 for at undgå konflikt
     environment:
       POSTGRES_DB: bookbuddy_prod_db
       POSTGRES_USER: postgres
