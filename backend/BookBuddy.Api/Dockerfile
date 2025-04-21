@@ -1,8 +1,8 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-# Opdater COPY til at bruge korrekt relativ sti
-COPY ./backend /app/backend  # Sørg for at bruge ./backend, ikke kun backend
+# Brug den rigtige sti for at kopiere filerne
+COPY ./backend/BookBuddy.Api /app/backend
 
 RUN ls -l /app/backend/BookBuddy.Api
 
