@@ -1,7 +1,8 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-COPY backend /app/backend
+# Opdater COPY til at bruge korrekt relativ sti
+COPY ./backend /app/backend  # Sørg for at bruge ./backend, ikke kun backend
 
 RUN ls -l /app/backend/BookBuddy.Api
 
@@ -10,7 +11,7 @@ RUN dotnet publish /app/backend/BookBuddy.Api/BookBuddy.Api.csproj -c Release -o
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
-COPY --from=build /app/out . 
+COPY --from=build /app/out .
 
 RUN ls -l /app
 
