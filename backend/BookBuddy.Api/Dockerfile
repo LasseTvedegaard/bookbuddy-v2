@@ -5,6 +5,9 @@ WORKDIR /app
 # Kopier filerne til containeren
 COPY . .  
 
+# Tjek om projektfilen findes
+RUN ls -l /app/backend/BookBuddy.Api
+
 # Kør restore og publish for backend
 RUN dotnet restore backend/BookBuddy.Api/BookBuddy.Api.csproj
 RUN dotnet publish backend/BookBuddy.Api/BookBuddy.Api.csproj -c Release -o /app/out
