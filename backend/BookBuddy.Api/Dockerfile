@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
 # Kopier filerne fra den lokale mappe til containeren
-COPY . /app
+COPY ./backend /app/backend  # Kopier kun backend-mappen korrekt
 
 # Tjek om projektfilen findes (fejlfinding)
 RUN ls -l /app/backend/BookBuddy.Api
