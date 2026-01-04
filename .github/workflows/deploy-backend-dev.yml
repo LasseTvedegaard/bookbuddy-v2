@@ -3,7 +3,7 @@ name: Deploy Backend to DEV
 on:
   push:
     branches:
-      - develop
+      - dev
 
 jobs:
   build-and-deploy:
