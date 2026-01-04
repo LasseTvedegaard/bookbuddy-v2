@@ -1,77 +1,35 @@
-name: CI Pipeline
+name: Deploy Backend to DEV
 
 on:
   push:
-    branches: [dev, stage, main]
+    branches:
+      - develop
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_DB: bookbuddydb
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: secret
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
-      - name: Checkout kode
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Sæt op .NET
+      - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
-      - name: Byg backend
-        run: |
-          cd backend/BookBuddy.Api
-          dotnet build
+      - name: Restore
+        run: dotnet restore
 
-      - name: Kør tests
-        run: |
-          cd backend/BookBuddy.Tests
-          dotnet test
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
 
-      - name: Installer Node.js
-        uses: actions/setup-node@v3
+      - name: Publish
+        run: dotnet publish Book-REST-Service/Book-REST-Service.csproj -c Release -o publish
+
+      - name: Deploy to Azure Web App (DEV)
+        uses: azure/webapps-deploy@v2
         with:
-          node-version: '18'
-
-      - name: Byg frontend
-        run: |
-          cd frontend
-          npm install
-          npm run build
-
-      - name: Byg mobilapp (Expo)
-        working-directory: mobile
-        run: |
-          npm install
-          npx expo install --check
-          npx expo export --output-dir dist
-
-      - name: Log ind på Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Byg og push backend image
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/bookbuddy-backend:dev ./backend/BookBuddy.Api
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/bookbuddy-backend:dev
-
-      - name: Byg og push frontend image
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/bookbuddy-frontend:dev ./frontend
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/bookbuddy-frontend:dev
+          app-name: bookbuddy-api-dev
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_DEV }}
+          package: publish
