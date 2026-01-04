@@ -25,7 +25,7 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Publish
-        run: dotnet publish Book-REST-Service/Book-REST-Service.csproj -c Release -o publish
+        run: dotnet publish backend/BookBuddy.Api/BookBuddy.Api.csproj -c Release -o publish
 
       - name: Deploy to Azure Web App (DEV)
         uses: azure/webapps-deploy@v2
